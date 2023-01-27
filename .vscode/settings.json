@@ -8,5 +8,13 @@
     "**/Thumbs.db": true
   },
   "hide-files.files": [],
-  "cSpell.words": ["vite"]
+  "cSpell.words": [
+    "chrono",
+    "Datelike",
+    "jestconfig",
+    "npmignore",
+    "packagejson",
+    "vite",
+    "vitepress"
+  ]
 }
