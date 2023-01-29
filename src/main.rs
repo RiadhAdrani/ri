@@ -125,7 +125,7 @@ fn lib(name: &String, mgr: &String) -> std::io::Result<()>{
   "\"keywords\": [],\n"+
   "\"scripts\": {\n"+
     "\"test\":\"jest\",\n" +
-    "\"build\":\"rm -rf build && tsc\",\n" +
+    "\"build\":\"rm -rf build && tsc\"\n" +
   "},\n"+
   "\"devDependencies\": {\n"+
     "\"@types/node\":\"^18.11.9\",\n" +
@@ -134,8 +134,8 @@ fn lib(name: &String, mgr: &String) -> std::io::Result<()>{
     "\"eslint\":\"^8.27.0\",\n" +
     "\"jest\":\"^29.0.0\",\n" +
     "\"ts-jest\":\"^29.0.3\",\n" +
-    "\"typescript\":\"^4.9.3\",\n" +
-  "},\n"+
+    "\"typescript\":\"^4.9.3\"\n" +
+  "}\n"+
   "}";
 
   let idx = String::from("export {};");
