@@ -1,5 +1,21 @@
 #![allow(unused)]
 
+mod eslint;
+mod git;
+mod jest;
+mod licence;
+mod npm;
+mod readme;
+mod typescript;
+
+use eslint::{use_eslint, use_eslint_ignore};
+use git::use_git_ignore;
+use jest::use_jest_config;
+use licence::use_licence;
+use npm::{use_npm_ignore, use_pkg_json};
+use readme::use_readme;
+use typescript::use_ts_config;
+
 use chrono::{self, Datelike};
 use clap::Parser;
 use std::fs;
@@ -49,99 +65,17 @@ fn web(name: &String, framework: &String, lang: &String, mgr: &String) -> () {
         .status();
 }
 
-fn use_ts_config() -> String {
-    String::from("")
-        + "{\n"
-        + "\"exclude\": [\"node_modules\", \"src/**/*.test.ts\", \"./jest.config.js\"],\n"
-        + "\"compilerOptions\": {\n"
-        + "\"target\": \"es2016\",\n"
-        + "\"lib\": [\"es6\", \"dom\"],\n"
-        + "\"module\": \"commonjs\",\n"
-        + "\"rootDir\": \".\",\n"
-        + "\"resolveJsonModule\": true,\n"
-        + "\"allowJs\": true,\n"
-        + "\"declaration\": true,\n"
-        + "\"outDir\": \"build\",\n"
-        + "\"esModuleInterop\": true,\n"
-        + "\"forceConsistentCasingInFileNames\": true,\n"
-        + "\"strict\": true,\n"
-        + "\"noImplicitAny\": true,\n"
-        + "\"skipLibCheck\": true\n"
-        + "}\n"
-        + "}"
-}
-
 fn lib(name: &String, mgr: &String) -> std::io::Result<()> {
     let ts_config = use_ts_config();
+    let eslint_ignore = use_eslint_ignore();
+    let eslint_rc = use_eslint();
+    let git_ignore = use_git_ignore();
+    let npm_ignore = use_npm_ignore();
+    let licence_f = use_licence();
+    let readme_f = use_readme(name);
+    let jest_config = use_jest_config();
 
-    let eslint_ignore = String::from("") + "node_modules\n" + "dist\n" + "build\n";
-
-    let eslint_rc = String::from("")
-        + "{\n"
-        + "\"root\": true,"
-        + "\"parser\": \"@typescript-eslint/parser\","
-        + "\"plugins\": [\"@typescript-eslint\"],\n"
-        + "\"extends\": [\n"
-        + "\"eslint:recommended\",\n"
-        + "\"plugin:@typescript-eslint/eslint-recommended\",\n"
-        + "\"plugin:@typescript-eslint/recommended\""
-        + "]\n"
-        + "}";
-
-    let git_ignore =
-        String::from("") + "node_modules\n" + "dist\n" + "build\n" + "./docs/.vitepress/dist";
-
-    let npm_ignore = String::from("")
-        + ".github\n"
-        + "vscode\n"
-        + "docs\n"
-        + "README.md\n"
-        + "src/**/*.test.js\n"
-        + "src/**/*.test.ts\n"
-        + ".eslintignore\n"
-        + ".eslintrc\n"
-        + ".gitignore\n"
-        + "jest.config.js\n"
-        + "tsconfig.json\n"
-        + "package-lock.json\n";
-
-    let licence_f = format!("MIT License\n\nCopyright (c) {} Riadh Adrani\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: \n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",chrono::Utc::now().year().to_string());
-
-    let readme_f = format!("# {}", name);
-
-    let jest_config = String::from("")
-        + "/** @type {import('ts-jest').JestConfigWithTsJest} */\n"
-        + "module.exports = {\n"
-        + "\tpreset: \"ts-jest\",\n"
-        + "};";
-
-    let package_json = String::from("")
-        + "{"
-        + "\"name\":\""
-        + name
-        + "\",\n"
-        + "\"version\": \"0.0.0\",\n"
-        + "\"description\": \"\",\n"
-        + "\"types\": \"build/index.d.ts\",\n"
-        + "\"main\": \"build/index.js\",\n"
-        + "\"files\": [\"build/**/*\"],\n"
-        + "\"author\": \"riadh-adrani\",\n"
-        + "\"licence\": \"mit\",\n"
-        + "\"keywords\": [],\n"
-        + "\"scripts\": {\n"
-        + "\"test\":\"jest\",\n"
-        + "\"build\":\"rm -rf build && tsc\"\n"
-        + "},\n"
-        + "\"devDependencies\": {\n"
-        + "\"@types/node\":\"^18.11.9\",\n"
-        + "\"@typescript-eslint/eslint-plugin\":\"^5.42.1\",\n"
-        + "\"@typescript-eslint/parser\":\"^5.42.1\",\n"
-        + "\"eslint\":\"^8.27.0\",\n"
-        + "\"jest\":\"^29.0.0\",\n"
-        + "\"ts-jest\":\"^29.0.3\",\n"
-        + "\"typescript\":\"^4.9.3\"\n"
-        + "}\n"
-        + "}";
+    let package_json = use_pkg_json(name);
 
     let idx = String::from("export {};");
 
@@ -149,7 +83,7 @@ fn lib(name: &String, mgr: &String) -> std::io::Result<()> {
     fs::create_dir(format!("{}/src", name));
 
     let mut tsconfig =
-        File::create(format!("{}/tsconfig.json", name))?.write_all(ts_config.as_bytes())?;
+        File::create(format!("{}/tsconfig.json", name))?.write_all(use_ts_config().as_bytes())?;
     let mut eslintignore =
         File::create(format!("{}/.eslintignore", name))?.write_all(eslint_ignore.as_bytes())?;
     let mut eslintrc =

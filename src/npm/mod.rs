@@ -1,0 +1,45 @@
+pub fn use_npm_ignore() -> String {
+    String::from("")
+        + ".github\n"
+        + "vscode\n"
+        + "docs\n"
+        + "README.md\n"
+        + "src/**/*.test.js\n"
+        + "src/**/*.test.ts\n"
+        + ".eslintignore\n"
+        + ".eslintrc\n"
+        + ".gitignore\n"
+        + "jest.config.js\n"
+        + "tsconfig.json\n"
+        + "package-lock.json\n"
+}
+
+pub fn use_pkg_json(name: &String) -> String {
+    String::from("")
+        + "{"
+        + "\"name\":\""
+        + name
+        + "\",\n"
+        + "\"version\": \"0.0.0\",\n"
+        + "\"description\": \"\",\n"
+        + "\"types\": \"build/index.d.ts\",\n"
+        + "\"main\": \"build/index.js\",\n"
+        + "\"files\": [\"build/**/*\"],\n"
+        + "\"author\": \"riadh-adrani\",\n"
+        + "\"licence\": \"mit\",\n"
+        + "\"keywords\": [],\n"
+        + "\"scripts\": {\n"
+        + "\"test\":\"jest\",\n"
+        + "\"build\":\"rm -rf build && tsc\"\n"
+        + "},\n"
+        + "\"devDependencies\": {\n"
+        + "\"@types/node\":\"^18.11.9\",\n"
+        + "\"@typescript-eslint/eslint-plugin\":\"^5.42.1\",\n"
+        + "\"@typescript-eslint/parser\":\"^5.42.1\",\n"
+        + "\"eslint\":\"^8.27.0\",\n"
+        + "\"jest\":\"^29.0.0\",\n"
+        + "\"ts-jest\":\"^29.0.3\",\n"
+        + "\"typescript\":\"^4.9.3\"\n"
+        + "}\n"
+        + "}"
+}
